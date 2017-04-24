@@ -67,8 +67,11 @@ class Classifier(object):
             test_true = [review[-1] for review in test]
             self.fit(self.pos, self.neg)
             predictions = self.predict(train, test)
-            self.accuracies_.append(len([predictions[predictions[k] == test_true[k]]
-                                        for k in range(len(test_true))]))
+            accuracy = len([predictions[predictions[k] == test_true[k]]
+                            for k in range(len(test_true))]) / len(test_true)
+            print('accuracy {}'.format(accuracy))
+            self.accuracies_.append(accuracy)
         self.accuracy_ = np.mean(self.accuracies_)
         print('in {0} cv tests, accuracies are {1}'.format(n, self.accuracies_))
+        print('mean accracy {}'.format(self.accuracy_))
         return self.accuracy_

@@ -29,5 +29,6 @@ python preprocessing.py --punc --stop
 
 to run k nearest neighbor:
 ```commandline
-
+python runner.py
 ```
+there are two more options, --distance and --k for distance metrics and k value respectively

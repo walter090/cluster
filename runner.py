@@ -1,6 +1,7 @@
 
 
-def run(k, mode='knn',
+def run(k,
+        mode='knn',
         distance='euclidean',
         keep_punc=False,
         keep_stopwords=False):
