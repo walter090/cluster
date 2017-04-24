@@ -11,19 +11,18 @@ def preprocess(path, punctuation=False):
     for review in all_reviews:
         with open(os.path.join(path, review)) as reader:
             review_str = reader.read()
-            review_str = tokenizer.tokenize(review_str) if not punctuation\
+            review_str = tokenizer.tokenize(review_str) if not punctuation \
                 else word_tokenize(review_str)
             review_articles.append(review_str)
-
     return review_articles
 
 
 def vocab(reviews):
-    vocabulary = set()
+    vocabulary = []
     for review in reviews:
         for word in review:
-            vocabulary.add(word)
-    return list(vocabulary)
+            vocabulary.append(word)
+    return vocabulary
 
 
 def get_stopwords(reviews):
@@ -31,25 +30,32 @@ def get_stopwords(reviews):
     for review in reviews:
         for word in review:
             vocab_dup.append(word)
-    stop_words = Counter(vocab_dup).most_common(30)
+    stop_words = Counter(vocab_dup).most_common(50)
     return stop_words
 
 
-def remove_stopwords(reviews, stopwords):
-    return [[word for word in review if word not in stopwords]
-            for review in reviews]
+def remove_stopwords(reviews, stopwords, at_least=300):
+    words_reviews = [word for word in reviews if word not in stopwords]
+    words = []
+    for word in reviews:
+        words.append(word)
+    word_count = Counter(words)
+    un_rare_words = {key: value for key, value in word_count.items() if value > at_least}
+
+    actual = [word for word in words_reviews if word in list(un_rare_words.keys())]
+    return actual
 
 
 def vectorize(review, sentiment, vocabulary, vec='frequency'):
     assert vec == 'frequency' or vec == 'binary'
-    import numpy as np
-    vector = np.zeros(len(vocabulary))
+    vector = [0] * len(vocabulary)
+    print(vector)
     for i, word in enumerate(vocabulary):
         if vec == 'frequency':
             vector[i] = review.count(word)
         elif vector[i]:
             continue
-    return vector + sentiment
+    return vector.append(sentiment)
 
 
 def run(keep_punc=False, keep_stopwords=False):
@@ -58,8 +64,8 @@ def run(keep_punc=False, keep_stopwords=False):
     vocabulary = vocab(pos + neg)
     stopwords = get_stopwords(vocabulary)
     if not keep_stopwords:
-        pos = remove_stopwords(pos, stopwords)
-        neg = remove_stopwords(neg, stopwords)
+        vocabulary = remove_stopwords(vocabulary, stopwords)
+        vocabulary = list(set(vocabulary))
     return pos, neg, vocabulary
 
 
