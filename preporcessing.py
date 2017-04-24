@@ -49,13 +49,13 @@ def remove_stopwords(reviews, stopwords, at_least=300):
 def vectorize(review, sentiment, vocabulary, vec='frequency'):
     assert vec == 'frequency' or vec == 'binary'
     vector = [0] * len(vocabulary)
-    print(vector)
     for i, word in enumerate(vocabulary):
         if vec == 'frequency':
             vector[i] = review.count(word)
         elif vector[i]:
             continue
-    return vector.append(sentiment)
+    vector.append(sentiment)
+    return vector
 
 
 def run(keep_punc=False, keep_stopwords=False):

@@ -20,7 +20,7 @@ class KNNClassifier(Classifier):
         import operator
         distances = []
         for i, point in enumerate(samples):
-            distances.append((self.distance(point[: -1], target[: -1]), point[-1]))
+            distances.append((self.get_distance(point[: -1], target[: -1]), point[-1]))
         closest = sorted(distances, key=operator.itemgetter(0))[: self.k]
         return list(zip(*closest))[0]
 
@@ -40,5 +40,3 @@ class KNNClassifier(Classifier):
                 votes.append(candidates[random.randint(0, 1)])
             votes.append('+' if pos_vote > neg_vote else '-')
         return votes
-
-# if __name__ == '__main__':

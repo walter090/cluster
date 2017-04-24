@@ -33,7 +33,7 @@ class Classifier(object):
         self.reviews = self.pos + self.neg
         shuffle(self.reviews)
 
-    def distance(self, vector1, vector2):
+    def get_distance(self, vector1, vector2):
         import math
         distance = 0
         length = len(vector1) - 1
@@ -60,7 +60,6 @@ class Classifier(object):
         """
         length = len(self.reviews)
         size = length // n
-        print(self.reviews[0])
 
         for i in range(0, length, size):
             train = self.reviews[: i] + self.reviews[i + size:]
@@ -68,8 +67,8 @@ class Classifier(object):
             test_true = [review[-1] for review in test]
             self.fit(self.pos, self.neg)
             predictions = self.predict(train, test)
-            self.accuracies_.append(sum(predictions[predictions[k] == test_true[k]]
-                                        for k in range(len(test_true))))
+            self.accuracies_.append(len([predictions[predictions[k] == test_true[k]]
+                                        for k in range(len(test_true))]))
         self.accuracy_ = np.mean(self.accuracies_)
         print('in {0} cv tests, accuracies are {1}'.format(n, self.accuracies_))
         return self.accuracy_
