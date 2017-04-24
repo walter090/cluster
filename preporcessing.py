@@ -1,5 +1,5 @@
 import os
-from collections import Counter as counter
+from collections import Counter
 from nltk.tokenize import RegexpTokenizer, word_tokenize
 
 
@@ -23,11 +23,15 @@ def vocab(reviews):
     for review in reviews:
         for word in review:
             vocabulary.add(word)
-    return vocabulary
+    return list(vocabulary)
 
 
-def get_stopwords(vocab):
-    stop_words = counter.most_common(vocab, 50)
+def get_stopwords(reviews):
+    vocab_dup = []
+    for review in reviews:
+        for word in review:
+            vocab_dup.append(word)
+    stop_words = Counter(vocab_dup).most_common(30)
     return stop_words
 
 
@@ -36,7 +40,19 @@ def remove_stopwords(reviews, stopwords):
             for review in reviews]
 
 
-def run(keep_punc, keep_stopwords):
+def vectorize(review, sentiment, vocabulary, vec='frequency'):
+    assert vec == 'frequency' or vec == 'binary'
+    import numpy as np
+    vector = np.zeros(len(vocabulary))
+    for i, word in enumerate(vocabulary):
+        if vec == 'frequency':
+            vector[i] = review.count(word)
+        elif vector[i]:
+            continue
+    return vector + sentiment
+
+
+def run(keep_punc=False, keep_stopwords=False):
     pos = preprocess('data/pos', keep_punc)
     neg = preprocess('data/neg', keep_punc)
     vocabulary = vocab(pos + neg)
@@ -44,7 +60,7 @@ def run(keep_punc, keep_stopwords):
     if not keep_stopwords:
         pos = remove_stopwords(pos, stopwords)
         neg = remove_stopwords(neg, stopwords)
-    return pos, neg
+    return pos, neg, vocabulary
 
 
 if __name__ == '__main__':
