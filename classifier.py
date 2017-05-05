@@ -60,6 +60,8 @@ class Classifier(object):
         """
         length = len(self.reviews)
         size = length // n
+        self.accuracies_ = []
+        self.accuracy_ = None
 
         for i in range(0, length, size):
             train = self.reviews[: i] + self.reviews[i + size:]
@@ -67,8 +69,8 @@ class Classifier(object):
             test_true = [review[-1] for review in test]
             self.fit(self.pos, self.neg)
             predictions = self.predict(train, test)
-            accuracy = len([predictions[predictions[k] == test_true[k]]
-                            for k in range(len(test_true))]) / len(test_true)
+            accuracy = len([predictions[k] for k in range(len(test_true))
+                            if predictions[k] == test_true[k]]) / len(test_true)
             print('accuracy {}'.format(accuracy))
             self.accuracies_.append(accuracy)
         self.accuracy_ = np.mean(self.accuracies_)

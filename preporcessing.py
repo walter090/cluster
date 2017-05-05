@@ -30,7 +30,7 @@ def get_stopwords(reviews):
     for review in reviews:
         for word in review:
             vocab_dup.append(word)
-    stop_words = Counter(vocab_dup).most_common(50)
+    stop_words = Counter(vocab_dup).most_common(15)
     return stop_words
 
 
